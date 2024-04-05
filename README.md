@@ -1,0 +1,1 @@
+# hackkosice-2024
