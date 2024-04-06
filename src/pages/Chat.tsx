@@ -1,4 +1,4 @@
-import { Button, TextField } from "@mui/material";
+import { Button, Stack, TextField } from "@mui/material";
 import {
   Archive,
   ArrowLeft,
@@ -11,6 +11,7 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/Vector.svg";
+import { Loader } from "../components/Loader";
 
 export function Chat() {
   const navigate = useNavigate();
@@ -19,11 +20,14 @@ export function Chat() {
     description: "",
     desiredAction: "",
     downloadLink: "",
+    requestedChanges: "",
   });
 
   const [name] = useState<string>(".NET to Java");
 
   const [isFirstRequest, setIsFirstTime] = useState<boolean>(true);
+  const [isValidAnswer, setIsValidAnswer] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [answers] = useState<string>(
     "Lorem ipsum dolor sit amet consectetur. Vitae morbi ornare purus venenatis. Molestie sem accumsan felis nulla malesuada in ultricies pellentesque et. Leo tellus purus lectus senectus nulla. Arcu ornare viverra urna gravida v estibulumvitae velit lectus lectus."
@@ -36,11 +40,16 @@ export function Chat() {
   return (
     <div className="w-[100%] min-h-[100dvh] bg-white flex-col justify-start items-start inline-flex">
       <div className="w-[100%] flex justify-center items-center">
-        <div className="grow shrink basis-0 self-stretch px-5 pb-px bg-gray-50 border-b border-black border-opacity-5 justify-between items-center inline-flex">
-          <div className="h-5 justify-start items-center gap-1 flex">
-            <img src={logo} />
-            <div className="text-black text-lg font-semibold font-['Inter'] leading-snug">
-              T-refactor
+        <div className="grow shrink basis-0 self-stretch px-5 bg-gray-50 border-b border-black border-opacity-5 justify-between items-center flex">
+          <div className=" justify-start items-start flex flex-col">
+            <div className="h-5 justify-start items-center gap-1 flex">
+              <img src={logo} />
+              <div className="text-black text-lg font-semibold font-['Inter'] leading-snug">
+                T-refactor
+              </div>
+            </div>
+            <div className="text-[#E30074] text-sm font-semibold font-['Inter'] pl-[30px]">
+              by Deutsche Telekom
             </div>
           </div>
           <div className="justify-start items-start gap-2 flex">
@@ -79,7 +88,7 @@ export function Chat() {
         </div>
       </div>
       <div className="self-stretch  grow justify-stretch items-stretch inline-flex">
-        <div className="pr-2 justify-start items-start flex">
+        <div className="pr-2 justify-start items-start flex w-[100%]">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -138,10 +147,12 @@ export function Chat() {
                   <TextField
                     className="w-[100%] p-2.5 rounded-md border border-neutral-200"
                     value={form.desiredAction}
+                    disabled={!isFirstRequest}
                     onChange={handleChange}
                     name="desiredAction"
                   />
                 </div>
+
                 <div className="h-20 w-[100%] flex-col justify-center items-start gap-3 flex">
                   <div className="w-[100%] justify-between items-center inline-flex">
                     <div className="grow shrink basis-0 text-black text-base font-normal font-['Inter'] leading-normal">
@@ -157,6 +168,23 @@ export function Chat() {
                   />
                 </div>
               </div>
+              {isValidAnswer === false && (
+                <div className="h-20 w-[100%] flex-col justify-center items-start  flex">
+                  <div className="w-[100%] justify-between items-center inline-flex">
+                    <div className="w-[100%] grow shrink basis-0 text-black text-base font-normal font-['Inter'] leading-normal">
+                      What needs to changed?
+                    </div>
+                  </div>
+                  <TextField
+                    className="w-[100%] p-2.5 rounded-md border border-neutral-200"
+                    value={form.requestedChanges}
+                    multiline
+                    rows={3}
+                    onChange={handleChange}
+                    name="requestedChanges"
+                  />
+                </div>
+              )}
             </div>
             <Button
               className="self-stretch px-3.5 py-2.5  rounded-md justify-center items-center gap-1 flex"
@@ -176,109 +204,124 @@ export function Chat() {
               Generate refactor
             </Button>
           </form>
-          <div className="self-stretch pl-7 pr-14 pt-7 pb-10 flex-col justify-start items-center gap-3 flex">
-            <div className="self-stretch justify-start items-center gap-3 inline-flex">
-              <Star color="black" />
-              <div className="text-slate-800 text-base font-semibold font-['Inter'] leading-normal">
-                Result
-              </div>
-            </div>
-            <div className="self-stretch flex-col justify-start items-start gap-10 inline-flex">
-              <div className="flex-col justify-start items-start gap-8 flex">
-                <div className="w-[100%]">
-                  <span className="text-black text-lg font-semibold font-['Inter'] leading-relaxed">
-                    Refactored {name}
-                    <br />
-                  </span>
-                  <span className="text-slate-800 text-lg font-normal font-['Inter'] leading-relaxed">
-                    <br />
-                    {answers}
-                  </span>
+          <div
+            className="self-stretch pl-7 pr-14 pt-7 pb-10 flex-col justify-start w-[100%] items-center gap-3 flex"
+            style={{ position: "relative" }}
+          >
+            {loading && <Loader />}
+            {!loading && (
+              <>
+                <div className="self-stretch justify-start items-center gap-3 inline-flex">
+                  <Star color="black" />
+                  <div className="text-slate-800 text-base font-semibold font-['Inter'] leading-normal">
+                    Result
+                  </div>
                 </div>
+                <div className="self-stretch flex-col justify-start items-start gap-10 inline-flex">
+                  <div className="flex-col justify-start items-start gap-8 flex">
+                    <div className="w-[100%]">
+                      <span className="text-black text-lg font-semibold font-['Inter'] leading-relaxed">
+                        Refactored {name}
+                        <br />
+                      </span>
+                      <span className="text-slate-800 text-lg font-normal font-['Inter'] leading-relaxed">
+                        <br />
+                        {answers}
+                      </span>
+                    </div>
 
-                <Button
-                  className="px-4 py-3 rounded-lg border-black justify-start items-center gap-10 inline-flex"
-                  sx={{
-                    border: "2px solid black",
-                    textAlign: "left",
-                    borderRadius: "10px",
-                    "&:hover": { background: "white", opacity: "0.7" },
-                  }}
-                >
-                  <div className="grow shrink basis-0 h-9 justify-start items-center gap-2.5 flex">
-                    <Folder color="black" />
-                    <div className="grow shrink basis-0 flex-col justify-center items-start inline-flex">
-                      <div className="self-stretch text-black text-sm font-bold font-['Inter'] leading-tight">
-                        t-refactor-answer.zip
+                    <Stack
+                      component="a"
+                      href="https://github.com/DILLIR/hackkosice-2024/archive/refs/heads/main.zip"
+                      download={true}
+                      className="px-4 py-3 rounded-lg border-black justify-start items-center gap-10 inline-flex"
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        border: "2px solid black",
+                        textAlign: "left",
+                        borderRadius: "10px",
+                        "&:hover": { background: "white", opacity: "0.7" },
+                      }}
+                    >
+                      <div className="grow shrink basis-0 h-9 justify-start items-center gap-2.5 flex">
+                        <Folder color="black" />
+                        <div className="grow shrink basis-0 flex-col justify-center items-start inline-flex">
+                          <div className="self-stretch text-black text-sm font-bold font-['Inter'] leading-tight">
+                            t-refactor-answer.zip
+                          </div>
+                          <div className="self-stretch text-zinc-600 text-xs font-medium font-['Inter'] leading-none">
+                            2.7 Mb
+                          </div>
+                        </div>
                       </div>
-                      <div className="self-stretch text-zinc-600 text-xs font-medium font-['Inter'] leading-none">
-                        2.7 Mb
-                      </div>
+                      <Download color="black" />
+                    </Stack>
+                  </div>
+                  <div className="flex-col justify-start items-start gap-8 flex">
+                    <div className="w-[100%]">
+                      <span className="text-black text-lg font-semibold font-['Inter'] leading-relaxed">
+                        Is this project working correctly?
+                        <br />
+                      </span>
+                      <span className="text-slate-800 text-lg font-normal font-['Inter'] leading-relaxed">
+                        <br />
+                        Could you please confirm if the code provided is
+                        functioning correctly? If there are any issues or
+                        errors, please let me know, and I'll be happy to assist
+                        you in ensuring that the code works as intended.
+                      </span>
+                    </div>
+                    <div className="self-stretch justify-start items-start gap-2.5 inline-flex">
+                      <Button
+                        className="grow shrink basis-0 h-11 px-4 py-3 rounded-lg border border-neutral-200 justify-start items-center gap-10 flex"
+                        onClick={() => {
+                          setIsFirstTime(false);
+                          setIsValidAnswer(true);
+                        }}
+                        sx={{
+                          border: "2px solid black",
+                          textAlign: "left",
+                          borderRadius: "10px",
+                          textTransform: "none",
+                          "&:hover": { background: "white", opacity: "0.7" },
+                        }}
+                      >
+                        <div className="grow shrink basis-0 h-5 justify-start items-center gap-2.5 flex">
+                          <div className="grow shrink basis-0 flex-col justify-center items-start inline-flex">
+                            <div className="self-stretch text-black text-sm font-bold font-['Inter'] leading-tight">
+                              Yes, everything works
+                            </div>
+                          </div>
+                        </div>
+                      </Button>
+                      <Button
+                        className="grow shrink basis-0 h-11 px-4 py-3 rounded-lg border border-neutral-200 justify-start items-center gap-10 flex"
+                        onClick={() => {
+                          setIsFirstTime(false);
+                          setIsValidAnswer(false);
+                        }}
+                        sx={{
+                          border: "2px solid black",
+                          textAlign: "left",
+                          borderRadius: "10px",
+                          textTransform: "none",
+                          "&:hover": { background: "white", opacity: "0.7" },
+                        }}
+                      >
+                        <div className="grow shrink basis-0 h-5 justify-start items-center gap-2.5 flex">
+                          <div className="grow shrink basis-0 flex-col justify-center items-start inline-flex">
+                            <div className="self-stretch text-black text-sm font-bold font-['Inter'] leading-tight">
+                              No, the code has errors
+                            </div>
+                          </div>
+                        </div>
+                      </Button>
                     </div>
                   </div>
-                  <Download color="black" />
-                </Button>
-              </div>
-              <div className="flex-col justify-start items-start gap-8 flex">
-                <div className="w-[100%]">
-                  <span className="text-black text-lg font-semibold font-['Inter'] leading-relaxed">
-                    Is this project working correctly?
-                    <br />
-                  </span>
-                  <span className="text-slate-800 text-lg font-normal font-['Inter'] leading-relaxed">
-                    <br />
-                    Could you please confirm if the code provided is functioning
-                    correctly? If there are any issues or errors, please let me
-                    know, and I'll be happy to assist you in ensuring that the
-                    code works as intended.
-                  </span>
                 </div>
-                <div className="self-stretch justify-start items-start gap-2.5 inline-flex">
-                  <Button
-                    className="grow shrink basis-0 h-11 px-4 py-3 rounded-lg border border-neutral-200 justify-start items-center gap-10 flex"
-                    onClick={() => {
-                      setIsFirstTime(false);
-                    }}
-                    sx={{
-                      border: "2px solid black",
-                      textAlign: "left",
-                      borderRadius: "10px",
-                      textTransform: "none",
-                      "&:hover": { background: "white", opacity: "0.7" },
-                    }}
-                  >
-                    <div className="grow shrink basis-0 h-5 justify-start items-center gap-2.5 flex">
-                      <div className="grow shrink basis-0 flex-col justify-center items-start inline-flex">
-                        <div className="self-stretch text-black text-sm font-bold font-['Inter'] leading-tight">
-                          Yes, everything works
-                        </div>
-                      </div>
-                    </div>
-                  </Button>
-                  <Button
-                    className="grow shrink basis-0 h-11 px-4 py-3 rounded-lg border border-neutral-200 justify-start items-center gap-10 flex"
-                    onClick={() => {
-                      setIsFirstTime(false);
-                    }}
-                    sx={{
-                      border: "2px solid black",
-                      textAlign: "left",
-                      borderRadius: "10px",
-                      textTransform: "none",
-                      "&:hover": { background: "white", opacity: "0.7" },
-                    }}
-                  >
-                    <div className="grow shrink basis-0 h-5 justify-start items-center gap-2.5 flex">
-                      <div className="grow shrink basis-0 flex-col justify-center items-start inline-flex">
-                        <div className="self-stretch text-black text-sm font-bold font-['Inter'] leading-tight">
-                          No, the code has errors
-                        </div>
-                      </div>
-                    </div>
-                  </Button>
-                </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
         </div>
       </div>
