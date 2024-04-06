@@ -1,7 +1,16 @@
-import { Hello } from "./components/Hello";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { AllRefactors } from "./pages/AllRefators";
+import { Chat } from "./pages/Chat";
 
 function App() {
-  return <Hello />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/*" element={<AllRefactors />} />
+        <Route path="/chat" element={<Chat />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
