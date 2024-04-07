@@ -1,11 +1,9 @@
-import { Button, Stack, TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import {
   Archive,
   ArrowLeft,
   BrandGithub,
   Code,
-  Download,
-  Folder,
   Star,
 } from "@mynaui/icons-react";
 import { useState } from "react";
@@ -17,24 +15,53 @@ export function Chat() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
+    server: "",
     description: "",
-    desiredAction: "",
-    downloadLink: "",
+    desiredAction:
+      "Change all php code to python code, and answer ONLY! updated code",
+    github: "https://github.com/drnic/php-helloworld",
     requestedChanges: "",
   });
 
-  const [name] = useState<string>(".NET to Java");
+  const [name] = useState<string>("New chat");
 
   const [isFirstRequest, setIsFirstTime] = useState<boolean>(true);
   const [isValidAnswer, setIsValidAnswer] = useState<boolean | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [answers] = useState<string>(
-    "Lorem ipsum dolor sit amet consectetur. Vitae morbi ornare purus venenatis. Molestie sem accumsan felis nulla malesuada in ultricies pellentesque et. Leo tellus purus lectus senectus nulla. Arcu ornare viverra urna gravida v estibulumvitae velit lectus lectus."
-  );
+  // const [answer, setAnswer] = useState<string | null>("After conducting a thorough review of the given codebase and considering the instructions provided, I have identified several areas where Python code could be implemented to replace existing PHP code. However, without additional context or guidelines, I cannot provide a complete and comprehensive answer to the task at hand. To proceed with the conversion process, I recommend the following steps: 1. Identify all instances of <?php echo...in the codebase and determine if they can be replaced with equivalent Python code. 2. Refactor any functions or methods that are not already implemented in Python to align with Python programming principles. 3. Ensure that all updates are properly tested and integrated into the overall codebase. 4. Provide a complete and comprehensive answer to the task, including any necessary changes to the code structure and function calls. I understand the importance of this task and will approach it with caution and attention to detail to ensure the best possible outcome.");
+
+  const [answer, setAnswer] = useState<string | null>(null);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  }
+
+  async function handleSubmit() {
+    setLoading(true);
+    await fetch(form.server, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Connection: "keep-alive",
+        "Keep-Alive": `timeout=${5 * 60}, max=1000`,
+      },
+      body: JSON.stringify({
+        desiredAction: form.description,
+        description: form.desiredAction,
+        url: form.github,
+        requestedChanges: form.requestedChanges,
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setAnswer(data.result);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
 
   return (
@@ -55,12 +82,12 @@ export function Chat() {
           <div className="justify-start items-start gap-2 flex">
             <div className="h-7 px-3 py-0.5 rounded-full flex-col justify-center items-center inline-flex">
               <div className="text-neutral-500 text-sm font-bold font-['Inter'] leading-snug">
-                Home
+                All refactors
               </div>
             </div>
             <div className="px-3 py-1 bg-zinc-100 rounded-lg flex-col justify-center items-center inline-flex">
               <div className="text-black text-sm font-bold font-['Inter'] leading-snug">
-                All refactors
+                Chat
               </div>
             </div>
           </div>
@@ -92,7 +119,7 @@ export function Chat() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              console.log(form);
+              handleSubmit();
             }}
             className="self-stretch p-6 min-w-[450px] bg-white border-r border-zinc-100 flex-col justify-between items-center flex"
           >
@@ -119,6 +146,22 @@ export function Chat() {
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div className="flex-col w-[100%] justify-start items-start gap-6 flex">
+                <div className="h-10 w-[100%] flex-col justify-center items-start gap-3 flex">
+                  <div className="w-[100%] justify-between items-center inline-flex">
+                    <div className="grow shrink basis-0 text-black text-base font-normal font-['Inter'] leading-normal">
+                      Server
+                    </div>
+                  </div>
+                  <TextField
+                    value={form.server}
+                    onChange={handleChange}
+                    disabled={!isFirstRequest}
+                    name="server"
+                    className="w-[100%] h-24 px-2.5 py-2 rounded-md border border-neutral-200"
+                  />
                 </div>
               </div>
               <div className="flex-col w-[100%] justify-start items-start gap-6 flex">
@@ -160,8 +203,8 @@ export function Chat() {
                     </div>
                   </div>
                   <TextField
-                    name="downloadLink"
-                    value={form.downloadLink}
+                    name="github"
+                    value={form.github}
                     disabled={!isFirstRequest}
                     onChange={handleChange}
                     className="w-[100%] p-2.5 rounded-md border border-neutral-200"
@@ -187,12 +230,13 @@ export function Chat() {
               )}
             </div>
             <Button
-              className="self-stretch px-3.5 py-2.5  rounded-md justify-center items-center gap-1 flex"
+              className="self-stretch px-3.5 py-2.5 mt-[10px] rounded-md justify-center items-center gap-1 flex"
               sx={{
                 background: "black",
                 textTransform: "none",
                 color: "white",
                 borderRadius: "8px",
+                marginTop: "20px",
                 ":hover": {
                   opacity: 0.8,
                   background: "black",
@@ -209,7 +253,7 @@ export function Chat() {
             style={{ position: "relative" }}
           >
             {loading && <Loader />}
-            {!loading && (
+            {!loading && answer != null && (
               <>
                 <div className="self-stretch justify-start items-center gap-3 inline-flex">
                   <Star color="black" />
@@ -226,10 +270,10 @@ export function Chat() {
                       </span>
                       <span className="text-slate-800 text-lg font-normal font-['Inter'] leading-relaxed">
                         <br />
-                        {answers}
+                        {answer}
                       </span>
                     </div>
-
+                    {/* 
                     <Stack
                       component="a"
                       href="https://github.com/DILLIR/hackkosice-2024/archive/refs/heads/main.zip"
@@ -256,7 +300,7 @@ export function Chat() {
                         </div>
                       </div>
                       <Download color="black" />
-                    </Stack>
+                    </Stack> */}
                   </div>
                   <div className="flex-col justify-start items-start gap-8 flex">
                     <div className="w-[100%]">

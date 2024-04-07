@@ -25,7 +25,7 @@ export function AllRefactors() {
           <div className="justify-start items-start gap-2 flex">
             <div className="h-7 px-3 py-0.5 rounded-full flex-col justify-center items-center inline-flex">
               <div className="text-neutral-500 text-sm font-bold font-['Inter'] leading-snug">
-                Home
+                Chat
               </div>
             </div>
             <div className="px-3 py-1 bg-zinc-100 rounded-lg flex-col justify-center items-center inline-flex">
