@@ -1,7 +1,15 @@
 const OpenAI = require('openai');
 const cors = require('cors');
+const dotenv = require('dotenv');
 
-cors.config();
+dotenv.config();
+
+const corsOptions = {
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+    optionsSuccessStatus: 200,
+};
+cors(corsOptions);
 
 const openai = new OpenAI({
     apiKey: process.env.VITE_OPENAI_API_KEY,
