@@ -3,12 +3,20 @@ const axios = require('axios');
 const fs = require('fs');
 const AdmZip = require('adm-zip');
 const { generateResponse } = require('./openai');
+const cors = require('cors');
+
+const corsOptions = {
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+    optionsSuccessStatus: 200,
+};
 
 const app = express();
 const port = 3000;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+app.use(cors(corsOptions));
 
 // Function to download a GitHub repository as a zip archive
 async function downloadRepoZip(repoUrl, outputFilePath) {
@@ -76,7 +84,7 @@ app.post('/processRepo', async (req, res) => {
 
         // Send the download link to the client
         const downloadUrl = `http://localhost:${port}/download?filePath=${outputFilePath}`;
-        res.json({ downloadUrl });
+        res.json({ result: downloadUrl });
     } catch (error) {
         console.error('Error processing repository:', error);
         res.status(500).json({ error: 'Failed to process repository' });
