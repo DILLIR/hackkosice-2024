@@ -1,4 +1,8 @@
-<!-- 
+# Google Colab - https://colab.research.google.com/drive/1IspmUZ9OePdYXwGMsLTI0HM07ThQoOJo?usp=sharing
+
+# Branch for Google Colab - llm-model
+
+<!--
 This repository is to show the cool project you created.
 To make it easier to present, we created this sample, which you can edit and use for your HK project.
 -->
@@ -22,14 +26,11 @@ In the next part, we recommend displaying all important shields for your project
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![first-timers-only Friendly](https://img.shields.io/badge/first--timers--only-friendly-blue.svg)](http://www.firsttimersonly.com/)
 
-
-
 A quick short description of what this project is about. It should be explained in
-3 - 4 four sentences to catch the eye of the viewer of the Githu repository. 
+3 - 4 four sentences to catch the eye of the viewer of the Githu repository.
 It can contain some technologies, and what is the outcome of the project.
 
 ![image](.template_images/Mid.png)
-
 
 ## Other Project repositories
 
@@ -43,10 +44,10 @@ If your project is constructed out of multiple Repositories, you can specify the
 Documentation is a crucial part of every project, but also maybe during the hackathon, you did not have time to create it. We recommend coming back later and filling in this part, for example, with https://docs.github.com/en/communities/documenting-your-project-with-wikis/about-wikis
 -->
 
-
 ## Contributors ✨
 
 Thanks go to these wonderful people
+
 <!--
 Here, you can show off all your cool teammates with whom you created this project.
 If you want to automate it, you can use a cool bot: https://allcontributors.org/
@@ -61,4 +62,3 @@ If you want to automate it, you can use a cool bot: https://allcontributors.org/
 <!-- You can use this section to thank people who helped you create this awesome project outside of your team -->
 
 ![image](.template_images/Bot.png)
-
