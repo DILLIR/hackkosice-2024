@@ -62,14 +62,14 @@ async function convertPhpToPython(inputZipPath, outputZipPath) {
 
 // Route to process GitHub repository and provide download link
 app.post('/processRepo', async (req, res) => {
-    const { repoUrl } = req.body;
+    const { url } = req.body;
 
     const downloadFilePath = 'repository.zip';
     const outputFilePath = 'converted_repository.zip';
 
     try {
         // Download repository zip
-        await downloadRepoZip(repoUrl, downloadFilePath);
+        await downloadRepoZip(url, downloadFilePath);
 
         // Convert PHP to Python in the downloaded zip
         await convertPhpToPython(downloadFilePath, outputFilePath);
